@@ -64,3 +64,43 @@ html { -webkit-overflow-scrolling: touch; }
 .animate-overlay {
   animation: fadeOverlay 0.2s ease both;
 }
+
+/* ── Starfield ── */
+@keyframes twinkle {
+  0%, 100% { opacity: 0.3; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.5); }
+}
+
+.animate-twinkle {
+  animation: twinkle 2s ease-in-out infinite;
+}
+
+@keyframes starDrift {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(calc(var(--drift-x) * 0.5), calc(var(--drift-y) * -0.3)); }
+  50% { transform: translate(var(--drift-x), var(--drift-y)); }
+  75% { transform: translate(calc(var(--drift-x) * -0.3), calc(var(--drift-y) * 0.5)); }
+}
+
+.animate-star-drift {
+  animation: starDrift var(--drift-duration, 12s) ease-in-out infinite;
+}
+
+@keyframes nebula1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(30px, 20px) scale(1.1); }
+}
+
+@keyframes nebula2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-20px, -30px) scale(1.15); }
+}
+
+@keyframes nebula3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-15px, 25px) scale(1.05); }
+}
+
+.animate-nebula-1 { animation: nebula1 12s ease-in-out infinite; }
+.animate-nebula-2 { animation: nebula2 15s ease-in-out infinite; }
+.animate-nebula-3 { animation: nebula3 10s ease-in-out infinite; }
