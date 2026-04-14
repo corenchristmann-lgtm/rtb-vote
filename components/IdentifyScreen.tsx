@@ -52,74 +52,59 @@ export function IdentifyScreen({ onIdentified }: Props) {
   }
 
   return (
-    <div className="min-h-dvh flex flex-col items-center justify-center px-6 relative">
-      {/* Ambient blobs */}
-      <div className="bg-ambient" />
-
-      <div className="w-full max-w-sm space-y-8 relative z-10">
-        {/* Logo with glow */}
-        <div className="flex justify-center animate-fade-in-up">
-          <div className="relative">
-            <div className="absolute inset-0 rounded-3xl bg-primary/20 blur-xl scale-125" />
-            <div className="relative w-22 h-22 rounded-3xl bg-white shadow-xl shadow-primary/15 flex items-center justify-center ring-1 ring-white/50">
-              <Image src="/logos/venturelab.svg" alt="VentureLab" width={56} height={56} priority unoptimized />
-            </div>
+    <div className="min-h-dvh flex flex-col items-center justify-center px-6 bg-bg">
+      <div className="w-full max-w-[380px] space-y-10">
+        {/* Logo */}
+        <div className="flex justify-center animate-in">
+          <div className="w-16 h-16 rounded-2xl bg-surface shadow-[0_2px_16px_rgba(122,74,237,0.12)] flex items-center justify-center">
+            <Image src="/logos/venturelab.svg" alt="VentureLab" width={40} height={40} priority unoptimized />
           </div>
         </div>
 
         {/* Title */}
-        <div className="text-center animate-fade-in-up" style={{ animationDelay: "100ms" }}>
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary mb-2">Soiree des pitchs</p>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-heading via-heading to-primary bg-clip-text text-transparent">
-            Road to Business
+        <div className="text-center animate-in" style={{ animationDelay: "60ms" }}>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">Soiree des pitchs</p>
+          <h1 className="text-[28px] font-extrabold text-heading tracking-tight mt-2 leading-tight">
+            Road to Business 2026
           </h1>
-          <p className="text-sm text-muted mt-2 font-medium">Elis ton coup de coeur parmi les finalistes</p>
+          <p className="text-[15px] text-muted mt-2">Elis ton coup de coeur</p>
         </div>
 
-        {/* Form card */}
+        {/* Form */}
         <form
           onSubmit={handleSubmit}
-          className="glass-strong rounded-3xl p-7 shadow-2xl shadow-primary/8 space-y-5 animate-fade-in-up"
-          style={{ animationDelay: "200ms" }}
+          className="space-y-4 animate-in"
+          style={{ animationDelay: "120ms" }}
         >
-          <label className="text-[11px] font-bold text-muted uppercase tracking-[0.15em] block text-center">
-            Identifie-toi
-          </label>
-
           <div className="space-y-3">
-            <div className="relative group">
-              <input
-                type="text"
-                placeholder="Prenom"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                autoComplete="given-name"
-                className="w-full h-13 px-5 rounded-2xl border border-border/60 bg-white/60 text-heading text-sm font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/30 focus:bg-white transition-all duration-200"
-              />
-            </div>
-
-            <div className="relative group">
-              <input
-                type="text"
-                placeholder="Nom"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-                autoComplete="family-name"
-                className="w-full h-13 px-5 rounded-2xl border border-border/60 bg-white/60 text-heading text-sm font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/30 focus:bg-white transition-all duration-200"
-              />
-            </div>
+            <input
+              type="text"
+              placeholder="Prenom"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              autoComplete="given-name"
+              className="w-full h-[52px] px-4 rounded-[14px] bg-surface border border-border text-heading text-[15px] font-medium placeholder:text-subtle shadow-[0_1px_3px_rgba(0,0,0,0.04)] focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(122,74,237,0.1)] transition-all duration-150"
+            />
+            <input
+              type="text"
+              placeholder="Nom"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              autoComplete="family-name"
+              className="w-full h-[52px] px-4 rounded-[14px] bg-surface border border-border text-heading text-[15px] font-medium placeholder:text-subtle shadow-[0_1px_3px_rgba(0,0,0,0.04)] focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(122,74,237,0.1)] transition-all duration-150"
+            />
           </div>
 
           {error && (
-            <div className="rounded-xl bg-error/8 border border-error/15 px-4 py-3 animate-fade-in-scale">
-              <p className="text-sm text-error text-center font-semibold">{error}</p>
+            <div className="rounded-[12px] bg-error/6 px-4 py-3 animate-scale-in">
+              <p className="text-[13px] text-error text-center font-semibold">{error}</p>
             </div>
           )}
 
           <button
             type="submit"
             disabled={loading || !firstName.trim() || !lastName.trim()}
-            className="btn-glow pressable w-full h-13 rounded-2xl bg-gradient-to-r from-primary via-primary to-primary-light text-white text-sm font-bold shadow-xl shadow-primary/30 disabled:opacity-25 disabled:shadow-none transition-all duration-200 relative z-10"
+            className="w-full h-[52px] rounded-[14px] bg-primary text-white text-[15px] font-bold shadow-[0_4px_14px_rgba(122,74,237,0.35)] disabled:opacity-30 disabled:shadow-none active:scale-[0.98] transition-all duration-150"
           >
             {loading ? (
               <span className="flex items-center justify-center gap-2">
@@ -130,7 +115,7 @@ export function IdentifyScreen({ onIdentified }: Props) {
           </button>
         </form>
 
-        <p className="text-[11px] text-muted/40 text-center font-medium animate-fade-in-up" style={{ animationDelay: "400ms" }}>
+        <p className="text-[11px] text-subtle text-center animate-in" style={{ animationDelay: "200ms" }}>
           VentureLab · Jeudi 17 avril 2026
         </p>
       </div>

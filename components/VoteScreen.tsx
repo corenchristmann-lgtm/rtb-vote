@@ -68,110 +68,125 @@ export function VoteScreen({ guest, onVoted }: Props) {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center h-dvh gap-4 relative">
-        <div className="bg-ambient" />
-        <div className="w-10 h-10 border-3 border-primary/20 border-t-primary rounded-full animate-spin" />
-        <p className="text-sm text-muted font-medium">Chargement des finalistes...</p>
+      <div className="flex flex-col items-center justify-center h-dvh gap-3 bg-bg">
+        <div className="w-8 h-8 border-[2.5px] border-primary/15 border-t-primary rounded-full animate-spin" />
+        <p className="text-[13px] text-muted font-medium">Chargement...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-dvh flex flex-col relative">
-      {/* Ambient blobs */}
-      <div className="bg-ambient" />
-
+    <div className="min-h-dvh flex flex-col bg-bg">
       {/* Header */}
-      <div className="sticky top-0 z-20 glass-strong border-b border-white/30 px-5 pt-5 pb-3">
-        <p className="text-[11px] font-bold text-primary uppercase tracking-[0.15em] text-center">
-          Soiree des pitchs
-        </p>
-        <h1 className="text-xl font-extrabold text-heading text-center mt-1">
-          Choisis ton coup de coeur
-        </h1>
-        <p className="text-xs text-muted text-center mt-1">
-          {guest.first_name}, selectionne le projet qui t&apos;a le plus inspire
-        </p>
+      <div className="sticky top-0 z-20 bg-bg/80 backdrop-blur-xl border-b border-border/50">
+        <div className="px-5 pt-[max(env(safe-area-inset-top),16px)] pb-4">
+          <p className="text-[13px] font-medium text-muted text-center">
+            Bonjour {guest.first_name}
+          </p>
+          <h1 className="text-[20px] font-extrabold text-heading text-center mt-0.5 tracking-tight">
+            Ton coup de coeur ?
+          </h1>
+        </div>
       </div>
 
       {/* Finalist list */}
-      <div className="flex-1 px-5 pt-4 pb-28 space-y-3 relative z-10">
-        {finalists.map((f, i) => (
-          <div key={f.id} className="animate-fade-in-up" style={{ animationDelay: `${i * 70}ms` }}>
-            <FinalistCard
-              finalist={f}
-              selected={selectedId === f.id}
-              onSelect={() => setSelectedId(f.id)}
-            />
-          </div>
-        ))}
+      <div className="flex-1 px-5 pt-5 pb-32">
+        <div className="space-y-5">
+          {finalists.map((f, i) => (
+            <div key={f.id} className="animate-in" style={{ animationDelay: `${i * 50}ms` }}>
+              <FinalistCard
+                finalist={f}
+                selected={selectedId === f.id}
+                onSelect={() => setSelectedId(f.id)}
+              />
+            </div>
+          ))}
+        </div>
       </div>
 
-      {/* Fixed bottom bar */}
-      <div className="fixed bottom-0 left-0 right-0 z-20 p-5 pb-6">
-        <div className="absolute inset-0 bg-gradient-to-t from-bg-start via-bg-start/95 to-transparent" />
-        <div className="relative z-10">
+      {/* Fixed bottom CTA */}
+      <div className="fixed bottom-0 left-0 right-0 z-20">
+        <div className="bg-gradient-to-t from-bg from-60% to-transparent h-8" />
+        <div className="bg-bg px-5 pb-[max(env(safe-area-inset-bottom),20px)]">
           {error && (
-            <div className="rounded-xl bg-error/8 border border-error/15 px-4 py-2.5 mb-3 animate-fade-in-scale">
-              <p className="text-sm text-error text-center font-semibold">{error}</p>
+            <div className="rounded-[12px] bg-error/6 px-4 py-2.5 mb-3 animate-scale-in">
+              <p className="text-[13px] text-error text-center font-semibold">{error}</p>
             </div>
           )}
           <button
             onClick={() => setConfirming(true)}
             disabled={!selectedId}
-            className="btn-glow pressable w-full h-14 rounded-2xl bg-gradient-to-r from-primary via-primary to-primary-light text-white text-base font-bold shadow-xl shadow-primary/30 disabled:opacity-20 disabled:shadow-none transition-all duration-200 relative z-10"
+            className="w-full h-[56px] rounded-[16px] bg-primary text-white text-[16px] font-bold shadow-[0_4px_14px_rgba(122,74,237,0.35)] disabled:bg-heading/8 disabled:text-muted/40 disabled:shadow-none active:scale-[0.98] transition-all duration-150"
           >
-            {selectedId ? "Voter" : "Selectionne un projet"}
+            {selectedId ? (
+              <span className="flex items-center justify-center gap-2">
+                Voter pour {selected?.project_name}
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="opacity-80">
+                  <path d="M5 12h14m-6-6l6 6-6 6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </span>
+            ) : "Selectionne un projet"}
           </button>
         </div>
       </div>
 
-      {/* Confirmation modal */}
+      {/* Confirmation bottom sheet */}
       {confirming && selected && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-5 animate-fade-in-scale" style={{ animationDuration: "200ms" }}>
+        <div className="fixed inset-0 z-50 flex items-end justify-center">
           {/* Backdrop */}
-          <div className="absolute inset-0 bg-heading/40 backdrop-blur-md" onClick={() => !submitting && setConfirming(false)} />
+          <div
+            className="absolute inset-0 bg-heading/50 animate-overlay"
+            onClick={() => !submitting && setConfirming(false)}
+          />
 
-          {/* Modal */}
-          <div className="relative w-full max-w-sm glass-strong rounded-3xl p-7 shadow-2xl shadow-primary/10 space-y-5 mb-2 sm:mb-0">
-            {/* Decorative top bar */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-16 h-1 rounded-full bg-border mt-3 sm:hidden" />
-
-            <div className="pt-2">
-              <p className="text-center text-lg font-extrabold text-heading">
-                Confirmer ton vote ?
-              </p>
+          {/* Sheet */}
+          <div className="relative w-full max-w-[440px] bg-surface rounded-t-[28px] animate-slide-up shadow-[0_-8px_40px_rgba(0,0,0,0.12)]">
+            {/* Handle */}
+            <div className="flex justify-center pt-3 pb-1">
+              <div className="w-10 h-[5px] rounded-full bg-heading/10" />
             </div>
 
-            <div className="rounded-2xl bg-gradient-to-br from-primary/5 via-primary/8 to-primary/5 border border-primary/10 p-5 text-center">
-              <div className="w-14 h-14 rounded-xl overflow-hidden mx-auto mb-3 ring-2 ring-primary/20 ring-offset-2 ring-offset-white/50">
-                <img src={selected.photo_url} alt="" className="w-full h-full object-cover" />
+            <div className="px-6 pb-[max(env(safe-area-inset-bottom),24px)] pt-2">
+              <p className="text-[20px] font-extrabold text-heading text-center">
+                Confirmer ton vote
+              </p>
+              <p className="text-[14px] text-muted text-center mt-1">
+                Cette action est definitive
+              </p>
+
+              {/* Selected project recap */}
+              <div className="mt-5 rounded-[16px] overflow-hidden border border-border shadow-[0_1px_4px_rgba(0,0,0,0.04)]">
+                <div className="relative w-full aspect-[21/9] bg-bg overflow-hidden">
+                  <img src={selected.photo_url} alt="" className="w-full h-full object-cover" />
+                </div>
+                <div className="px-4 py-3">
+                  <p className="text-[16px] font-bold text-heading">{selected.project_name}</p>
+                  <p className="text-[13px] text-primary font-semibold">{selected.first_name} {selected.last_name}</p>
+                </div>
               </div>
-              <p className="text-lg font-extrabold text-primary">{selected.project_name}</p>
-              <p className="text-sm text-muted mt-0.5 font-medium">
-                {selected.first_name} {selected.last_name}
-              </p>
-            </div>
 
-            <div className="flex gap-3">
-              <button
-                onClick={() => setConfirming(false)}
-                disabled={submitting}
-                className="pressable flex-1 h-13 rounded-2xl glass border border-border/40 text-sm font-semibold text-muted transition-all hover:bg-white/80 disabled:opacity-50"
-              >
-                Annuler
-              </button>
-              <button
-                onClick={handleConfirm}
-                disabled={submitting}
-                className="btn-glow pressable flex-1 h-13 rounded-2xl bg-gradient-to-r from-primary to-primary-light text-white text-sm font-bold shadow-lg shadow-primary/25 disabled:opacity-50 relative z-10"
-              >
-                {submitting ? (
-                  <span className="flex items-center justify-center gap-2">
-                    <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  </span>
-                ) : "Confirmer"}
-              </button>
+              {/* Actions */}
+              <div className="mt-6 space-y-3">
+                <button
+                  onClick={handleConfirm}
+                  disabled={submitting}
+                  className="w-full h-[52px] rounded-[14px] bg-primary text-white text-[15px] font-bold shadow-[0_4px_14px_rgba(122,74,237,0.35)] disabled:opacity-60 active:scale-[0.98] transition-all duration-150"
+                >
+                  {submitting ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      Envoi...
+                    </span>
+                  ) : "Confirmer mon vote"}
+                </button>
+                <button
+                  onClick={() => setConfirming(false)}
+                  disabled={submitting}
+                  className="w-full h-[48px] rounded-[14px] text-[15px] font-semibold text-muted active:bg-bg transition-colors disabled:opacity-50"
+                >
+                  Annuler
+                </button>
+              </div>
             </div>
           </div>
         </div>

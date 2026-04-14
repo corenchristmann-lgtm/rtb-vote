@@ -26,7 +26,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="fr" className={dmSans.variable}>
-      <body className="min-h-dvh bg-gradient-to-b from-bg-start via-bg-mid to-white font-sans text-heading antialiased">
+      <body className="min-h-dvh bg-bg font-sans text-heading antialiased">
         {children}
       </body>
     </html>
