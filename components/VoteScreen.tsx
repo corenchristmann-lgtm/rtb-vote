@@ -45,9 +45,9 @@ export function VoteScreen({ guest, onVoted }: Props) {
 
       if (voteErr) {
         if (voteErr.code === "23505") {
-          setError("Tu as deja vote !");
+          setError("Tu as déjà voté !");
         } else {
-          setError("Erreur lors du vote. Reessaie.");
+          setError("Erreur lors du vote. Réessaie.");
         }
         setSubmitting(false);
         setConfirming(false);
@@ -61,7 +61,7 @@ export function VoteScreen({ guest, onVoted }: Props) {
 
       onVoted();
     } catch {
-      setError("Erreur de connexion. Reessaie.");
+      setError("Erreur de connexion. Réessaie.");
       setSubmitting(false);
       setConfirming(false);
     }
@@ -85,7 +85,7 @@ export function VoteScreen({ guest, onVoted }: Props) {
             Bonjour {guest.first_name}
           </p>
           <h1 className="text-[20px] font-extrabold text-heading text-center mt-0.5 tracking-tight">
-            Ton coup de coeur ?
+            Ton coup de cœur ?
           </h1>
         </div>
       </div>
@@ -128,7 +128,7 @@ export function VoteScreen({ guest, onVoted }: Props) {
                   <path d="M5 12h14m-6-6l6 6-6 6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </span>
-            ) : "Selectionne un projet"}
+            ) : "Sélectionne un projet"}
           </button>
         </div>
       </div>
@@ -154,7 +154,7 @@ export function VoteScreen({ guest, onVoted }: Props) {
                 Confirmer ton vote
               </p>
               <p className="text-[14px] text-muted text-center mt-1">
-                Cette action est definitive
+                Cette action est définitive
               </p>
 
               {/* Selected project recap */}

@@ -33,20 +33,20 @@ export function IdentifyScreen({ onIdentified }: Props) {
         .single();
 
       if (dbErr || !data) {
-        setError("Nom non trouve dans la liste des invites.");
+        setError("Nom non trouvé dans la liste des invités.");
         setLoading(false);
         return;
       }
 
       if (data.has_voted) {
-        setError("Tu as deja vote !");
+        setError("Tu as déjà voté !");
         setLoading(false);
         return;
       }
 
       onIdentified(data as Guest);
     } catch {
-      setError("Erreur de connexion. Reessaie.");
+      setError("Erreur de connexion. Réessaie.");
     }
     setLoading(false);
   }
@@ -63,11 +63,11 @@ export function IdentifyScreen({ onIdentified }: Props) {
 
         {/* Title */}
         <div className="text-center animate-in" style={{ animationDelay: "60ms" }}>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">Soiree des pitchs</p>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">Soirée des pitchs</p>
           <h1 className="text-[28px] font-extrabold text-heading tracking-tight mt-2 leading-tight">
             Road to Business 2026
           </h1>
-          <p className="text-[15px] text-muted mt-2">Elis ton coup de coeur</p>
+          <p className="text-[15px] text-muted mt-2">Élis ton coup de cœur</p>
         </div>
 
         {/* Form */}
@@ -79,7 +79,7 @@ export function IdentifyScreen({ onIdentified }: Props) {
           <div className="space-y-3">
             <input
               type="text"
-              placeholder="Prenom"
+              placeholder="Prénom"
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
               autoComplete="given-name"
@@ -109,7 +109,7 @@ export function IdentifyScreen({ onIdentified }: Props) {
             {loading ? (
               <span className="flex items-center justify-center gap-2">
                 <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                Verification...
+                Vérification...
               </span>
             ) : "Continuer"}
           </button>

@@ -52,6 +52,10 @@ CREATE POLICY "anon_read_finalists" ON rtb_finalists
 CREATE POLICY "anon_insert_vote" ON rtb_votes
   FOR INSERT TO anon WITH CHECK (true);
 
+-- Anon peut lire les votes (admin dashboard)
+CREATE POLICY "anon_read_votes" ON rtb_votes
+  FOR SELECT TO anon USING (true);
+
 -- ============================================
 -- EXEMPLES : comment inserer les donnees
 -- ============================================

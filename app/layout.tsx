@@ -9,7 +9,7 @@ const dmSans = DM_Sans({
 
 export const metadata: Metadata = {
   title: "Vote — Road to Business 2026",
-  description: "Elis ton coup de coeur parmi les 8 finalistes",
+  description: "\u00C9lis ton coup de c\u0153ur parmi les 8 finalistes",
   icons: { icon: "/logos/venturelab.svg" },
 };
 

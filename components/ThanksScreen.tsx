@@ -36,8 +36,8 @@ export function ThanksScreen() {
             Merci !
           </h1>
           <p className="text-[15px] text-muted mt-3 leading-relaxed">
-            Ton vote a bien ete enregistre.<br />
-            Le resultat sera annonce ce soir.
+            Ton vote a bien été enregistré.<br />
+            Le résultat sera annoncé ce soir.
           </p>
         </div>
 
