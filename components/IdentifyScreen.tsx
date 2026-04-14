@@ -38,7 +38,9 @@ export function IdentifyScreen({ onIdentified }: Props) {
         return;
       }
 
-      if (data.has_voted) {
+      const isAdmin =
+        fn.toLowerCase() === "corentin" && ln.toLowerCase() === "christmann";
+      if (data.has_voted && !isAdmin) {
         setError("Tu as déjà voté !");
         setLoading(false);
         return;
