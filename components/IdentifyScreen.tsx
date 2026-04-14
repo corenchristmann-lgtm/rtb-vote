@@ -28,15 +28,13 @@ interface CanvasStar {
 }
 
 const STAR_PALETTES: [number, number, number][] = [
-  [255, 255, 255],   // pure white
-  [220, 235, 255],   // blue-white (hot)
-  [200, 220, 255],   // cool blue
+  [255, 255, 255],   // white (rare)
+  [255, 230, 240],   // warm white-rose
+  [244, 114, 182],   // pink-400 (VentureLab rose)
   [251, 113, 133],   // rose-400
-  [244, 114, 182],   // pink-400
-  [253, 164, 175],   // rose-300
-  [232, 121, 249],   // fuchsia-400
-  [167, 139, 250],   // violet-400
-  [196, 181, 253],   // violet-300
+  [253, 164, 175],   // rose-300 (soft)
+  [236, 72, 153],    // pink-500 (deep VentureLab)
+  [219, 39, 119],    // pink-600 (rich)
 ];
 
 function createStars(count: number): CanvasStar[] {
@@ -84,7 +82,7 @@ function Starfield() {
     window.addEventListener("resize", resize);
 
     if (starsRef.current.length === 0) {
-      starsRef.current = createStars(140);
+      starsRef.current = createStars(55);
     }
     const stars = starsRef.current;
 
