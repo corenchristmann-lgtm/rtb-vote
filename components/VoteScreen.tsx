@@ -14,6 +14,7 @@ export function VoteScreen({ guest, onVoted }: Props) {
   const [finalists, setFinalists] = useState<Finalist[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [expandedId, setExpandedId] = useState<number | null>(null);
   const [confirming, setConfirming] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -91,13 +92,15 @@ export function VoteScreen({ guest, onVoted }: Props) {
 
       {/* Finalist list */}
       <div className="flex-1 px-5 pt-5 pb-32">
-        <div className="space-y-5">
+        <div className="space-y-3">
           {finalists.map((f, i) => (
             <div key={f.id} className="animate-in" style={{ animationDelay: `${i * 50}ms` }}>
               <FinalistCard
                 finalist={f}
                 selected={selectedId === f.id}
-                onSelect={() => setSelectedId(f.id)}
+                expanded={expandedId === f.id}
+                onToggle={() => setExpandedId(expandedId === f.id ? null : f.id)}
+                onSelect={() => { setSelectedId(f.id); setExpandedId(null); }}
               />
             </div>
           ))}
