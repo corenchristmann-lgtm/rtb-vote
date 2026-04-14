@@ -52,59 +52,85 @@ export function IdentifyScreen({ onIdentified }: Props) {
   }
 
   return (
-    <div className="min-h-dvh flex flex-col items-center justify-center px-6">
-      <div className="w-full max-w-sm space-y-8">
-        {/* Logo */}
+    <div className="min-h-dvh flex flex-col items-center justify-center px-6 relative">
+      {/* Ambient blobs */}
+      <div className="bg-ambient" />
+
+      <div className="w-full max-w-sm space-y-8 relative z-10">
+        {/* Logo with glow */}
         <div className="flex justify-center animate-fade-in-up">
-          <div className="w-20 h-20 rounded-2xl bg-surface shadow-lg shadow-primary/10 flex items-center justify-center">
-            <Image src="/logos/venturelab.svg" alt="VentureLab" width={56} height={56} priority unoptimized />
+          <div className="relative">
+            <div className="absolute inset-0 rounded-3xl bg-primary/20 blur-xl scale-125" />
+            <div className="relative w-22 h-22 rounded-3xl bg-white shadow-xl shadow-primary/15 flex items-center justify-center ring-1 ring-white/50">
+              <Image src="/logos/venturelab.svg" alt="VentureLab" width={56} height={56} priority unoptimized />
+            </div>
           </div>
         </div>
 
         {/* Title */}
-        <div className="text-center animate-fade-in-up" style={{ animationDelay: "80ms" }}>
-          <h1 className="text-2xl font-extrabold tracking-tight">Road to Business 2026</h1>
-          <p className="text-sm text-muted mt-1.5">Elis ton coup de coeur</p>
+        <div className="text-center animate-fade-in-up" style={{ animationDelay: "100ms" }}>
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary mb-2">Soiree des pitchs</p>
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-br from-heading via-heading to-primary bg-clip-text text-transparent">
+            Road to Business
+          </h1>
+          <p className="text-sm text-muted mt-2 font-medium">Elis ton coup de coeur parmi les finalistes</p>
         </div>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="rounded-2xl bg-surface p-6 shadow-xl shadow-primary/5 border border-border space-y-4 animate-fade-in-up" style={{ animationDelay: "160ms" }}>
-          <label className="text-xs font-semibold text-muted uppercase tracking-widest block text-center">
+        {/* Form card */}
+        <form
+          onSubmit={handleSubmit}
+          className="glass-strong rounded-3xl p-7 shadow-2xl shadow-primary/8 space-y-5 animate-fade-in-up"
+          style={{ animationDelay: "200ms" }}
+        >
+          <label className="text-[11px] font-bold text-muted uppercase tracking-[0.15em] block text-center">
             Identifie-toi
           </label>
 
-          <input
-            type="text"
-            placeholder="Prenom"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-            autoComplete="given-name"
-            className="w-full h-12 px-4 rounded-xl border border-border bg-[#FAFAFE] text-heading text-sm font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/40 transition-[border-color,box-shadow] duration-200"
-          />
+          <div className="space-y-3">
+            <div className="relative group">
+              <input
+                type="text"
+                placeholder="Prenom"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                autoComplete="given-name"
+                className="w-full h-13 px-5 rounded-2xl border border-border/60 bg-white/60 text-heading text-sm font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/30 focus:bg-white transition-all duration-200"
+              />
+            </div>
 
-          <input
-            type="text"
-            placeholder="Nom"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-            autoComplete="family-name"
-            className="w-full h-12 px-4 rounded-xl border border-border bg-[#FAFAFE] text-heading text-sm font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/40 transition-[border-color,box-shadow] duration-200"
-          />
+            <div className="relative group">
+              <input
+                type="text"
+                placeholder="Nom"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                autoComplete="family-name"
+                className="w-full h-13 px-5 rounded-2xl border border-border/60 bg-white/60 text-heading text-sm font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/30 focus:bg-white transition-all duration-200"
+              />
+            </div>
+          </div>
 
           {error && (
-            <p className="text-sm text-error text-center font-medium">{error}</p>
+            <div className="rounded-xl bg-error/8 border border-error/15 px-4 py-3 animate-fade-in-scale">
+              <p className="text-sm text-error text-center font-semibold">{error}</p>
+            </div>
           )}
 
           <button
             type="submit"
             disabled={loading || !firstName.trim() || !lastName.trim()}
-            className="w-full h-12 rounded-xl bg-gradient-to-r from-primary to-primary-light text-white text-sm font-bold shadow-lg shadow-primary/25 disabled:opacity-30 disabled:shadow-none transition-opacity duration-200"
+            className="btn-glow pressable w-full h-13 rounded-2xl bg-gradient-to-r from-primary via-primary to-primary-light text-white text-sm font-bold shadow-xl shadow-primary/30 disabled:opacity-25 disabled:shadow-none transition-all duration-200 relative z-10"
           >
-            {loading ? "Verification..." : "Continuer"}
+            {loading ? (
+              <span className="flex items-center justify-center gap-2">
+                <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                Verification...
+              </span>
+            ) : "Continuer"}
           </button>
         </form>
 
-        <p className="text-[11px] text-muted/50 text-center">
+        <p className="text-[11px] text-muted/40 text-center font-medium animate-fade-in-up" style={{ animationDelay: "400ms" }}>
           VentureLab · Jeudi 17 avril 2026
         </p>
       </div>
