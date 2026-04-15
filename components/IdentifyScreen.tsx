@@ -41,10 +41,25 @@ function createStars(count: number): CanvasStar[] {
   return Array.from({ length: count }, () => {
     const palette = STAR_PALETTES[Math.floor(Math.random() * STAR_PALETTES.length)];
     const size = Math.random() * 3 + 0.8;
+
+    // Concentrate stars on edges (top 25% and bottom 25%) to leave
+    // the center clear for the form on mobile. ~30% still scatter everywhere
+    // for depth, but smaller so they don't compete with UI.
+    let y = Math.random();
+    let adjustedSize = size;
+    const zone = Math.random();
+    if (zone < 0.35) {
+      y = Math.random() * 0.25;          // top band
+    } else if (zone < 0.7) {
+      y = 0.75 + Math.random() * 0.25;   // bottom band
+    } else {
+      adjustedSize = size * 0.6;          // center — smaller stars
+    }
+
     return {
       x: Math.random(),
-      y: Math.random(),
-      size,
+      y,
+      size: adjustedSize,
       baseOpacity: Math.random() * 0.4 + 0.4,
       twinkleSpeed: Math.random() * 1.5 + 0.8,
       twinkleOffset: Math.random() * Math.PI * 2,
@@ -82,7 +97,10 @@ function Starfield() {
     window.addEventListener("resize", resize);
 
     if (starsRef.current.length === 0) {
-      starsRef.current = createStars(55);
+      // Fewer stars on small screens (mobile portrait ~35, tablet ~45, desktop ~60)
+      const screenArea = window.innerWidth * window.innerHeight;
+      const count = Math.round(Math.min(60, Math.max(30, screenArea / 15000)));
+      starsRef.current = createStars(count);
     }
     const stars = starsRef.current;
 
