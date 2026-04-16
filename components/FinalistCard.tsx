@@ -85,7 +85,7 @@ export function FinalistCard({ finalist, selected, expanded, onToggle, onSelect 
                 src={finalist.photo_url}
                 alt=""
                 fill
-                className="object-cover"
+                className="object-cover object-top"
                 sizes="(max-width: 768px) 100vw, 400px"
                 unoptimized
               />
