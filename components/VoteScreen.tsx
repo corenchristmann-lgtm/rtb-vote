@@ -23,8 +23,9 @@ export function VoteScreen({ guest, onVoted }: Props) {
   const submitGuard = useRef(false);
 
   useEffect(() => {
+    const supabase = getSupabase();
+
     async function load() {
-      const supabase = getSupabase();
       const [fRes, cRes] = await Promise.all([
         supabase.from("rtb_finalists").select("*").order("display_order"),
         supabase.from("rtb_vote_config").select("voting_open").eq("id", 1).single(),
@@ -32,18 +33,18 @@ export function VoteScreen({ guest, onVoted }: Props) {
       if (fRes.data) setFinalists(fRes.data as Finalist[]);
       if (cRes.data) setVotingOpen(cRes.data.voting_open);
       setLoading(false);
-
-      // Listen for voting toggle changes in real-time
-      const channel = supabase
-        .channel("vote-config")
-        .on("postgres_changes", { event: "UPDATE", schema: "public", table: "rtb_vote_config" }, (payload) => {
-          setVotingOpen((payload.new as { voting_open: boolean }).voting_open);
-        })
-        .subscribe();
-
-      return () => { supabase.removeChannel(channel); };
     }
     load();
+
+    // Listen for voting toggle changes in real-time
+    const channel = supabase
+      .channel("vote-config")
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "rtb_vote_config" }, (payload) => {
+        setVotingOpen((payload.new as { voting_open: boolean }).voting_open);
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
   }, []);
 
   const selected = finalists.find((f) => f.id === selectedId);
