@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { getSupabase } from "@/lib/supabase";
 import { FinalistCard } from "./FinalistCard";
@@ -19,6 +19,7 @@ export function VoteScreen({ guest, onVoted }: Props) {
   const [confirming, setConfirming] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const submitGuard = useRef(false);
 
   useEffect(() => {
     async function load() {
@@ -35,7 +36,8 @@ export function VoteScreen({ guest, onVoted }: Props) {
   const selected = finalists.find((f) => f.id === selectedId);
 
   async function handleConfirm() {
-    if (!selectedId) return;
+    if (!selectedId || submitGuard.current) return;
+    submitGuard.current = true;
     setSubmitting(true);
     setError(null);
 
@@ -49,6 +51,7 @@ export function VoteScreen({ guest, onVoted }: Props) {
           if (rpcErr.code === "23505") {
             setError("Tu as déjà voté !");
             setSubmitting(false);
+            submitGuard.current = false;
             setConfirming(false);
             return;
           }
@@ -56,6 +59,7 @@ export function VoteScreen({ guest, onVoted }: Props) {
           if (attempt < MAX_RETRIES - 1) continue;
           setError("Erreur lors du vote. Réessaie.");
           setSubmitting(false);
+          submitGuard.current = false;
           setConfirming(false);
           return;
         }
@@ -66,6 +70,7 @@ export function VoteScreen({ guest, onVoted }: Props) {
         if (attempt < MAX_RETRIES - 1) continue;
         setError("Erreur de connexion. Réessaie.");
         setSubmitting(false);
+        submitGuard.current = false;
         setConfirming(false);
       }
     }

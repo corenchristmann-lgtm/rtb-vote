@@ -41,9 +41,10 @@ export default function AdminPage() {
   // Admin login — hardcoded credentials, no DB dependency
   function handleLogin(e: React.FormEvent) {
     e.preventDefault();
-    const fn = firstName.trim().toLowerCase();
-    const ln = lastName.trim().toLowerCase();
-    if (!ADMINS.some((a) => a.first === fn && a.last === ln)) {
+    const strip = (s: string) => s.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    const fn = strip(firstName);
+    const ln = strip(lastName);
+    if (!ADMINS.some((a) => strip(a.first) === fn && strip(a.last) === ln)) {
       setLoginError("Accès réservé à l'administrateur.");
       return;
     }

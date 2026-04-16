@@ -235,9 +235,7 @@ export function IdentifyScreen({ onIdentified }: Props) {
         .single();
 
       if (existing) {
-        const isAdmin =
-          fn.toLowerCase() === "corentin" && ln.toLowerCase() === "christmann";
-        if (existing.has_voted && !isAdmin) {
+        if (existing.has_voted) {
           setError("Tu as déjà voté !");
           setLoading(false);
           return;
