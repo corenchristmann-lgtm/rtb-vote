@@ -91,6 +91,9 @@ export function VoteScreen({ guest, onVoted }: Props) {
           <h1 className="text-[20px] font-extrabold text-heading text-center mt-0.5 tracking-tight">
             Ton coup de cœur ?
           </h1>
+          <p className="text-[13px] text-muted text-center mt-1">
+            Choisis l'entrepreneur qui t'a le plus convaincu
+          </p>
         </div>
       </div>
 
