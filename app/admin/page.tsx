@@ -5,8 +5,10 @@ import Image from "next/image";
 import { getSupabase } from "@/lib/supabase";
 import type { Guest, Finalist } from "@/lib/types";
 
-const ADMIN_FIRST = "corentin";
-const ADMIN_LAST = "christmann";
+const ADMINS = [
+  { first: "corentin", last: "christmann" },
+  { first: "aurélie", last: "neirinck" },
+];
 
 interface VoteRow {
   id: number;
@@ -41,7 +43,7 @@ export default function AdminPage() {
     e.preventDefault();
     const fn = firstName.trim().toLowerCase();
     const ln = lastName.trim().toLowerCase();
-    if (fn !== ADMIN_FIRST || ln !== ADMIN_LAST) {
+    if (!ADMINS.some((a) => a.first === fn && a.last === ln)) {
       setLoginError("Accès réservé à l'administrateur.");
       return;
     }
