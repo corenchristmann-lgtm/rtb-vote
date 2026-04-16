@@ -28,13 +28,12 @@ interface CanvasStar {
 }
 
 const STAR_PALETTES: [number, number, number][] = [
-  [255, 255, 255],   // white (rare)
-  [255, 230, 240],   // warm white-rose
   [244, 114, 182],   // pink-400 (VentureLab rose)
-  [251, 113, 133],   // rose-400
-  [253, 164, 175],   // rose-300 (soft)
   [236, 72, 153],    // pink-500 (deep VentureLab)
   [219, 39, 119],    // pink-600 (rich)
+  [190, 50, 120],    // deep rose
+  [167, 80, 162],    // soft violet
+  [139, 92, 246],    // violet-500
 ];
 
 function createStars(count: number): CanvasStar[] {
@@ -273,13 +272,13 @@ export function IdentifyScreen({ onIdentified }: Props) {
   }
 
   return (
-    <div className="relative min-h-dvh flex flex-col items-center justify-center px-6 overflow-hidden bg-[#0a0618]">
-      {/* Nebula blobs */}
+    <div className="relative min-h-dvh flex flex-col items-center justify-center px-6 overflow-hidden bg-[#FDF2F4]">
+      {/* Nebula blobs — soft rosé tones */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute -top-1/4 -left-1/4 w-[700px] h-[700px] rounded-full bg-rose-500/[0.12] blur-[140px] animate-nebula-1" />
-        <div className="absolute -bottom-1/4 -right-1/4 w-[600px] h-[600px] rounded-full bg-violet-600/[0.1] blur-[120px] animate-nebula-2" />
-        <div className="absolute top-1/4 right-0 w-[400px] h-[400px] rounded-full bg-rose-400/[0.08] blur-[100px] animate-nebula-3" />
-        <div className="absolute bottom-1/3 left-1/4 w-[350px] h-[350px] rounded-full bg-fuchsia-500/[0.06] blur-[90px] animate-nebula-2" />
+        <div className="absolute -top-1/4 -left-1/4 w-[700px] h-[700px] rounded-full bg-rose-300/[0.25] blur-[140px] animate-nebula-1" />
+        <div className="absolute -bottom-1/4 -right-1/4 w-[600px] h-[600px] rounded-full bg-violet-300/[0.18] blur-[120px] animate-nebula-2" />
+        <div className="absolute top-1/4 right-0 w-[400px] h-[400px] rounded-full bg-rose-200/[0.2] blur-[100px] animate-nebula-3" />
+        <div className="absolute bottom-1/3 left-1/4 w-[350px] h-[350px] rounded-full bg-fuchsia-200/[0.15] blur-[90px] animate-nebula-2" />
       </div>
 
       {/* Starfield canvas */}
@@ -289,20 +288,20 @@ export function IdentifyScreen({ onIdentified }: Props) {
       <div className="relative z-10 w-full max-w-[380px] space-y-10">
         {/* Logo */}
         <div className="flex justify-center animate-in">
-          <div className="w-16 h-16 rounded-2xl bg-white/[0.07] backdrop-blur-md border border-white/[0.08] shadow-[0_0_30px_rgba(244,114,182,0.12)] flex items-center justify-center">
+          <div className="w-16 h-16 rounded-2xl bg-white/60 backdrop-blur-md border border-rose-200/40 shadow-[0_0_30px_rgba(244,114,182,0.1)] flex items-center justify-center">
             <Image src="/logos/venturelab.svg" alt="VentureLab" width={40} height={40} priority unoptimized />
           </div>
         </div>
 
         {/* Title */}
         <div className="text-center animate-in" style={{ animationDelay: "60ms" }}>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-rose-300/90">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-rose-400">
             Nuit des étoiles entrepreneuriales
           </p>
-          <h1 className="text-[28px] font-extrabold text-white tracking-tight mt-2.5 leading-tight">
+          <h1 className="text-[28px] font-extrabold text-heading tracking-tight mt-2.5 leading-tight">
             Road to Business 2026
           </h1>
-          <p className="text-[15px] text-white/50 mt-2">Élis ton coup de cœur</p>
+          <p className="text-[15px] text-muted mt-2">Élis ton coup de cœur</p>
         </div>
 
         {/* Form */}
@@ -318,7 +317,7 @@ export function IdentifyScreen({ onIdentified }: Props) {
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
               autoComplete="given-name"
-              className="w-full h-[52px] px-4 rounded-[14px] bg-white/[0.06] backdrop-blur-sm border border-white/[0.1] text-white text-[15px] font-medium placeholder:text-white/30 shadow-[0_2px_8px_rgba(0,0,0,0.2)] focus:outline-none focus:border-rose-400/40 focus:shadow-[0_0_0_3px_rgba(244,114,182,0.12)] transition-all duration-150"
+              className="w-full h-[52px] px-4 rounded-[14px] bg-white/70 backdrop-blur-sm border border-rose-200/50 text-heading text-[15px] font-medium placeholder:text-muted/50 shadow-[0_1px_4px_rgba(0,0,0,0.06)] focus:outline-none focus:border-rose-400/60 focus:shadow-[0_0_0_3px_rgba(244,114,182,0.12)] transition-all duration-150"
             />
             <input
               type="text"
@@ -326,20 +325,20 @@ export function IdentifyScreen({ onIdentified }: Props) {
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
               autoComplete="family-name"
-              className="w-full h-[52px] px-4 rounded-[14px] bg-white/[0.06] backdrop-blur-sm border border-white/[0.1] text-white text-[15px] font-medium placeholder:text-white/30 shadow-[0_2px_8px_rgba(0,0,0,0.2)] focus:outline-none focus:border-rose-400/40 focus:shadow-[0_0_0_3px_rgba(244,114,182,0.12)] transition-all duration-150"
+              className="w-full h-[52px] px-4 rounded-[14px] bg-white/70 backdrop-blur-sm border border-rose-200/50 text-heading text-[15px] font-medium placeholder:text-muted/50 shadow-[0_1px_4px_rgba(0,0,0,0.06)] focus:outline-none focus:border-rose-400/60 focus:shadow-[0_0_0_3px_rgba(244,114,182,0.12)] transition-all duration-150"
             />
           </div>
 
           {error && (
-            <div className="rounded-[12px] bg-red-500/10 border border-red-400/20 px-4 py-3 animate-scale-in">
-              <p className="text-[13px] text-red-300 text-center font-semibold">{error}</p>
+            <div className="rounded-[12px] bg-red-50 border border-red-200/60 px-4 py-3 animate-scale-in">
+              <p className="text-[13px] text-red-500 text-center font-semibold">{error}</p>
             </div>
           )}
 
           <button
             type="submit"
             disabled={loading || !firstName.trim() || !lastName.trim()}
-            className="w-full h-[52px] rounded-[14px] bg-gradient-to-r from-rose-500 to-violet-600 text-white text-[15px] font-bold shadow-[0_4px_20px_rgba(244,114,182,0.3)] disabled:opacity-20 disabled:shadow-none active:scale-[0.98] transition-all duration-150"
+            className="w-full h-[52px] rounded-[14px] bg-gradient-to-r from-rose-500 to-violet-600 text-white text-[15px] font-bold shadow-[0_4px_20px_rgba(244,114,182,0.25)] disabled:opacity-30 disabled:shadow-none active:scale-[0.98] transition-all duration-150"
           >
             {loading ? (
               <span className="flex items-center justify-center gap-2">
@@ -350,7 +349,7 @@ export function IdentifyScreen({ onIdentified }: Props) {
           </button>
         </form>
 
-        <p className="text-[11px] text-white/25 text-center animate-in" style={{ animationDelay: "200ms" }}>
+        <p className="text-[11px] text-muted/50 text-center animate-in" style={{ animationDelay: "200ms" }}>
           VentureLab · Jeudi 17 avril 2026
         </p>
       </div>
