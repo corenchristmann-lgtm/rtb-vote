@@ -19,16 +19,29 @@ export function VoteScreen({ guest, onVoted }: Props) {
   const [confirming, setConfirming] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [votingOpen, setVotingOpen] = useState(true);
   const submitGuard = useRef(false);
 
   useEffect(() => {
     async function load() {
-      const { data } = await getSupabase()
-        .from("rtb_finalists")
-        .select("*")
-        .order("display_order");
-      if (data) setFinalists(data as Finalist[]);
+      const supabase = getSupabase();
+      const [fRes, cRes] = await Promise.all([
+        supabase.from("rtb_finalists").select("*").order("display_order"),
+        supabase.from("rtb_vote_config").select("voting_open").eq("id", 1).single(),
+      ]);
+      if (fRes.data) setFinalists(fRes.data as Finalist[]);
+      if (cRes.data) setVotingOpen(cRes.data.voting_open);
       setLoading(false);
+
+      // Listen for voting toggle changes in real-time
+      const channel = supabase
+        .channel("vote-config")
+        .on("postgres_changes", { event: "UPDATE", schema: "public", table: "rtb_vote_config" }, (payload) => {
+          setVotingOpen((payload.new as { voting_open: boolean }).voting_open);
+        })
+        .subscribe();
+
+      return () => { supabase.removeChannel(channel); };
     }
     load();
   }, []);
@@ -50,6 +63,14 @@ export function VoteScreen({ guest, onVoted }: Props) {
         if (rpcErr) {
           if (rpcErr.code === "23505") {
             setError("Tu as déjà voté !");
+            setSubmitting(false);
+            submitGuard.current = false;
+            setConfirming(false);
+            return;
+          }
+          if (rpcErr.message === "VOTING_CLOSED") {
+            setError("Le vote est fermé pour le moment.");
+            setVotingOpen(false);
             setSubmitting(false);
             submitGuard.current = false;
             setConfirming(false);
@@ -97,9 +118,16 @@ export function VoteScreen({ guest, onVoted }: Props) {
             Ton coup de cœur ?
           </h1>
           <p className="text-[13px] text-muted text-center mt-1 italic">
-            Choisis l'entrepreneur qui t'a le plus convaincu
+            Choisis l&apos;entrepreneur qui t&apos;a le plus convaincu
           </p>
         </div>
+        {!votingOpen && (
+          <div className="bg-amber-50 border-t border-amber-200 px-4 py-2.5">
+            <p className="text-[13px] text-amber-700 text-center font-semibold">
+              Le vote n&apos;est pas encore ouvert
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Finalist list */}
@@ -130,7 +158,7 @@ export function VoteScreen({ guest, onVoted }: Props) {
           )}
           <button
             onClick={() => setConfirming(true)}
-            disabled={!selectedId}
+            disabled={!selectedId || !votingOpen}
             className="w-full h-[56px] rounded-[16px] bg-primary text-white text-[16px] font-bold shadow-[0_4px_14px_rgba(122,74,237,0.35)] disabled:bg-heading/8 disabled:text-muted/40 disabled:shadow-none active:scale-[0.98] transition-all duration-150"
           >
             {selectedId ? (

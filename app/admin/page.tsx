@@ -37,6 +37,8 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<Tab>("ranking");
   const [lastRefresh, setLastRefresh] = useState(new Date());
+  const [votingOpen, setVotingOpen] = useState(false);
+  const [toggling, setToggling] = useState(false);
 
   // Admin login — hardcoded credentials, no DB dependency
   function handleLogin(e: React.FormEvent) {
@@ -54,14 +56,16 @@ export default function AdminPage() {
   // Fetch all data
   const fetchAll = useCallback(async () => {
     const supabase = getSupabase();
-    const [fRes, gRes, vRes] = await Promise.all([
+    const [fRes, gRes, vRes, cRes] = await Promise.all([
       supabase.from("rtb_finalists").select("*").order("display_order"),
       supabase.from("rtb_guests").select("*").order("last_name"),
       supabase.from("rtb_votes").select("*").order("created_at", { ascending: false }),
+      supabase.from("rtb_vote_config").select("voting_open").eq("id", 1).single(),
     ]);
     if (fRes.data) setFinalists(fRes.data as Finalist[]);
     if (gRes.data) setGuests(gRes.data as Guest[]);
     if (vRes.data) setVotes(vRes.data as VoteRow[]);
+    if (cRes.data) setVotingOpen(cRes.data.voting_open);
     setLastRefresh(new Date());
     setLoading(false);
   }, []);
@@ -90,6 +94,14 @@ export default function AdminPage() {
       supabase.removeChannel(channel);
     };
   }, [authed, fetchAll, debouncedFetch]);
+
+  async function handleToggleVoting() {
+    setToggling(true);
+    const newState = !votingOpen;
+    await getSupabase().rpc("toggle_voting", { p_open: newState });
+    setVotingOpen(newState);
+    setToggling(false);
+  }
 
   // Build ranked finalists
   const ranked: RankedFinalist[] = finalists
@@ -199,15 +211,42 @@ export default function AdminPage() {
                 </button>
               </div>
             </div>
-            <a
-              href="/"
-              className="h-9 px-4 rounded-[10px] bg-primary/8 text-primary text-[13px] font-bold flex items-center gap-1.5 active:scale-[0.97] transition-transform"
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                <path d="M15 3h6v6M14 10l6.1-6.1M9 21H3v-6M10 14l-6.1 6.1" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              Voter
-            </a>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleToggleVoting}
+                disabled={toggling}
+                className={`h-9 px-4 rounded-[10px] text-[13px] font-bold flex items-center gap-1.5 active:scale-[0.97] transition-all ${
+                  votingOpen
+                    ? "bg-error/10 text-error"
+                    : "bg-emerald-500/10 text-emerald-600"
+                } disabled:opacity-50`}
+              >
+                {votingOpen ? (
+                  <>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                      <path d="M18.36 6.64A9 9 0 110 12h4a5 5 0 105-5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                    Fermer le vote
+                  </>
+                ) : (
+                  <>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                      <path d="M5 12l5 5L20 7" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                    Ouvrir le vote
+                  </>
+                )}
+              </button>
+              <a
+                href="/"
+                className="h-9 px-4 rounded-[10px] bg-primary/8 text-primary text-[13px] font-bold flex items-center gap-1.5 active:scale-[0.97] transition-transform"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                  <path d="M15 3h6v6M14 10l6.1-6.1M9 21H3v-6M10 14l-6.1 6.1" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                Voter
+              </a>
+            </div>
           </div>
         </div>
       </div>
