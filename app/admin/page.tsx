@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
 import { getSupabase } from "@/lib/supabase";
 import type { Guest, Finalist } from "@/lib/types";
@@ -80,6 +80,13 @@ export default function AdminPage() {
     setLoading(false);
   }, []);
 
+  // Debounced refetch — coalesce rapid realtime events into a single fetch
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const debouncedFetch = useCallback(() => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => fetchAll(), 800);
+  }, [fetchAll]);
+
   // Initial load + real-time subscription
   useEffect(() => {
     if (!authed) return;
@@ -88,12 +95,15 @@ export default function AdminPage() {
     const supabase = getSupabase();
     const channel = supabase
       .channel("admin-live")
-      .on("postgres_changes", { event: "*", schema: "public", table: "rtb_votes" }, () => fetchAll())
-      .on("postgres_changes", { event: "*", schema: "public", table: "rtb_guests" }, () => fetchAll())
+      .on("postgres_changes", { event: "*", schema: "public", table: "rtb_votes" }, () => debouncedFetch())
+      .on("postgres_changes", { event: "*", schema: "public", table: "rtb_guests" }, () => debouncedFetch())
       .subscribe();
 
-    return () => { supabase.removeChannel(channel); };
-  }, [authed, fetchAll]);
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+      supabase.removeChannel(channel);
+    };
+  }, [authed, fetchAll, debouncedFetch]);
 
   // Build ranked finalists
   const ranked: RankedFinalist[] = finalists

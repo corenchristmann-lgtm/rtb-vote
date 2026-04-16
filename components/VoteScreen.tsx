@@ -38,32 +38,35 @@ export function VoteScreen({ guest, onVoted }: Props) {
     setSubmitting(true);
     setError(null);
 
-    try {
-      const { error: voteErr } = await getSupabase()
-        .from("rtb_votes")
-        .insert({ guest_id: guest.id, finalist_id: selectedId });
+    const MAX_RETRIES = 3;
+    for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+      try {
+        const { error: rpcErr } = await getSupabase()
+          .rpc("cast_vote", { p_guest_id: guest.id, p_finalist_id: selectedId });
 
-      if (voteErr) {
-        if (voteErr.code === "23505") {
-          setError("Tu as déjà voté !");
-        } else {
+        if (rpcErr) {
+          if (rpcErr.code === "23505") {
+            setError("Tu as déjà voté !");
+            setSubmitting(false);
+            setConfirming(false);
+            return;
+          }
+          // Retry on transient errors
+          if (attempt < MAX_RETRIES - 1) continue;
           setError("Erreur lors du vote. Réessaie.");
+          setSubmitting(false);
+          setConfirming(false);
+          return;
         }
+
+        onVoted();
+        return;
+      } catch {
+        if (attempt < MAX_RETRIES - 1) continue;
+        setError("Erreur de connexion. Réessaie.");
         setSubmitting(false);
         setConfirming(false);
-        return;
       }
-
-      await getSupabase()
-        .from("rtb_guests")
-        .update({ has_voted: true, voted_at: new Date().toISOString() })
-        .eq("id", guest.id);
-
-      onVoted();
-    } catch {
-      setError("Erreur de connexion. Réessaie.");
-      setSubmitting(false);
-      setConfirming(false);
     }
   }
 

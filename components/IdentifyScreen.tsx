@@ -225,28 +225,47 @@ export function IdentifyScreen({ onIdentified }: Props) {
     setError(null);
 
     try {
-      const { data, error: dbErr } = await getSupabase()
+      const supabase = getSupabase();
+
+      // Try to find existing guest
+      const { data: existing } = await supabase
         .from("rtb_guests")
         .select("*")
         .ilike("first_name", fn)
         .ilike("last_name", ln)
         .single();
 
-      if (dbErr || !data) {
-        setError("Nom non trouvé dans la liste des invités.");
+      if (existing) {
+        const isAdmin =
+          fn.toLowerCase() === "corentin" && ln.toLowerCase() === "christmann";
+        if (existing.has_voted && !isAdmin) {
+          setError("Tu as déjà voté !");
+          setLoading(false);
+          return;
+        }
+        onIdentified(existing as Guest);
+        return;
+      }
+
+      // Guest not found — auto-register
+      const { data: created, error: insertErr } = await supabase
+        .from("rtb_guests")
+        .insert({ first_name: fn, last_name: ln })
+        .select()
+        .single();
+
+      if (insertErr || !created) {
+        // Unique constraint = someone with same name just registered
+        if (insertErr?.code === "23505") {
+          setError("Ce nom est déjà utilisé. Réessaie.");
+        } else {
+          setError("Erreur d'inscription. Réessaie.");
+        }
         setLoading(false);
         return;
       }
 
-      const isAdmin =
-        fn.toLowerCase() === "corentin" && ln.toLowerCase() === "christmann";
-      if (data.has_voted && !isAdmin) {
-        setError("Tu as déjà voté !");
-        setLoading(false);
-        return;
-      }
-
-      onIdentified(data as Guest);
+      onIdentified(created as Guest);
     } catch {
       setError("Erreur de connexion. Réessaie.");
     }
