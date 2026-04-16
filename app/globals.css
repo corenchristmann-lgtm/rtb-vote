@@ -57,6 +57,17 @@ html { -webkit-overflow-scrolling: touch; }
   animation: scaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
+@keyframes selectBounce {
+  0% { transform: scale(1); }
+  40% { transform: scale(0.97); }
+  70% { transform: scale(1.015); }
+  100% { transform: scale(1); }
+}
+
+.animate-select-bounce {
+  animation: selectBounce 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 .animate-slide-up {
   animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
 }

@@ -15,15 +15,17 @@ interface Props {
 export function FinalistCard({ finalist, selected, expanded, onToggle, onSelect }: Props) {
   return (
     <div
-      className={`rounded-[16px] bg-surface overflow-hidden transition-shadow duration-200 ${
+      role="option"
+      aria-selected={selected}
+      className={`rounded-[16px] overflow-hidden transition-all duration-200 ${
         selected
-          ? "shadow-[0_0_0_2.5px_#7A4AED,0_4px_16px_rgba(122,74,237,0.15)]"
-          : "shadow-[0_1px_3px_rgba(0,0,0,0.06),0_2px_8px_rgba(0,0,0,0.04)]"
-      }`}
+          ? "bg-primary/[0.04] shadow-[0_0_0_2.5px_#7A4AED,0_4px_16px_rgba(122,74,237,0.15)]"
+          : "bg-surface shadow-[0_1px_4px_rgba(0,0,0,0.08),0_2px_12px_rgba(0,0,0,0.05)]"
+      } ${selected ? "animate-select-bounce" : ""}`}
     >
-      {/* Header row — always visible */}
+      {/* Header row — tap to select + expand */}
       <button
-        onClick={onToggle}
+        onClick={() => { onSelect(); if (!expanded) onToggle(); }}
         className="w-full flex items-center gap-3.5 px-4 py-3.5 active:bg-bg/50 transition-colors"
       >
         {/* Avatar */}
@@ -99,7 +101,7 @@ export function FinalistCard({ finalist, selected, expanded, onToggle, onSelect 
               onClick={(e) => { e.stopPropagation(); onSelect(); }}
               className={`w-full h-[48px] rounded-[12px] mt-4 text-[14px] font-bold transition-all duration-150 active:scale-[0.98] ${
                 selected
-                  ? "bg-primary/8 text-primary border-2 border-primary/20"
+                  ? "bg-primary/10 text-primary border-2 border-primary/25"
                   : "bg-primary text-white shadow-[0_4px_14px_rgba(122,74,237,0.3)]"
               }`}
             >

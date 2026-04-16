@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { getSupabase } from "@/lib/supabase";
 import { FinalistCard } from "./FinalistCard";
 import type { Guest, Finalist } from "@/lib/types";
@@ -95,7 +96,7 @@ export function VoteScreen({ guest, onVoted }: Props) {
 
       {/* Finalist list */}
       <div className="flex-1 px-5 pt-5 pb-32">
-        <div className="space-y-3">
+        <div className="space-y-3" role="listbox" aria-label="Liste des finalistes">
           {finalists.map((f, i) => (
             <div key={f.id} className="animate-in" style={{ animationDelay: `${i * 50}ms` }}>
               <FinalistCard
@@ -125,9 +126,9 @@ export function VoteScreen({ guest, onVoted }: Props) {
             className="w-full h-[56px] rounded-[16px] bg-primary text-white text-[16px] font-bold shadow-[0_4px_14px_rgba(122,74,237,0.35)] disabled:bg-heading/8 disabled:text-muted/40 disabled:shadow-none active:scale-[0.98] transition-all duration-150"
           >
             {selectedId ? (
-              <span className="flex items-center justify-center gap-2">
-                Voter pour {selected?.project_name}
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="opacity-80">
+              <span className="flex items-center justify-center gap-2 max-w-full px-2">
+                <span className="truncate">Voter pour {selected?.project_name}</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="opacity-80 shrink-0">
                   <path d="M5 12h14m-6-6l6 6-6 6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </span>
@@ -163,7 +164,7 @@ export function VoteScreen({ guest, onVoted }: Props) {
               {/* Selected project recap */}
               <div className="mt-5 rounded-[16px] overflow-hidden border border-border shadow-[0_1px_4px_rgba(0,0,0,0.04)]">
                 <div className="relative w-full aspect-[21/9] bg-bg overflow-hidden">
-                  <img src={selected.photo_url} alt="" className="w-full h-full object-cover" />
+                  <Image src={selected.photo_url} alt="" fill className="object-cover" sizes="440px" unoptimized />
                 </div>
                 <div className="px-4 py-3">
                   <p className="text-[16px] font-bold text-heading">{selected.project_name}</p>
