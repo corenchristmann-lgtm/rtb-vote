@@ -21,14 +21,13 @@ interface RankedFinalist extends Finalist {
   voters: { name: string; time: string }[];
 }
 
-type Tab = "ranking" | "voters" | "vote";
+type Tab = "ranking" | "voters";
 
 export default function AdminPage() {
   const [authed, setAuthed] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [loginError, setLoginError] = useState<string | null>(null);
-  const [loginLoading, setLoginLoading] = useState(false);
 
   const [finalists, setFinalists] = useState<Finalist[]>([]);
   const [guests, setGuests] = useState<Guest[]>([]);
@@ -37,8 +36,8 @@ export default function AdminPage() {
   const [tab, setTab] = useState<Tab>("ranking");
   const [lastRefresh, setLastRefresh] = useState(new Date());
 
-  // Admin login
-  async function handleLogin(e: React.FormEvent) {
+  // Admin login — hardcoded credentials, no DB dependency
+  function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     const fn = firstName.trim().toLowerCase();
     const ln = lastName.trim().toLowerCase();
@@ -46,23 +45,7 @@ export default function AdminPage() {
       setLoginError("Accès réservé à l'administrateur.");
       return;
     }
-    setLoginLoading(true);
-    setLoginError(null);
-
-    const { data } = await getSupabase()
-      .from("rtb_guests")
-      .select("*")
-      .ilike("first_name", fn)
-      .ilike("last_name", ln)
-      .single();
-
-    if (!data) {
-      setLoginError("Compte non trouvé dans la base.");
-      setLoginLoading(false);
-      return;
-    }
     setAuthed(true);
-    setLoginLoading(false);
   }
 
   // Fetch all data
@@ -167,10 +150,10 @@ export default function AdminPage() {
             )}
             <button
               type="submit"
-              disabled={loginLoading || !firstName.trim() || !lastName.trim()}
+              disabled={!firstName.trim() || !lastName.trim()}
               className="w-full h-[52px] rounded-[14px] bg-primary text-white text-[15px] font-bold shadow-[0_4px_14px_rgba(122,74,237,0.35)] disabled:opacity-30 disabled:shadow-none active:scale-[0.98] transition-all duration-150"
             >
-              {loginLoading ? "Vérification..." : "Accéder"}
+              Accéder
             </button>
           </form>
         </div>
@@ -197,9 +180,21 @@ export default function AdminPage() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-[18px] font-extrabold text-heading tracking-tight">Admin RTB</h1>
-              <p className="text-[11px] text-muted font-medium mt-0.5">
-                Mise à jour : {lastRefresh.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
-              </p>
+              <div className="flex items-center gap-2 mt-0.5">
+                <p className="text-[11px] text-muted font-medium">
+                  {lastRefresh.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
+                </p>
+                <button
+                  onClick={() => fetchAll()}
+                  className="text-primary active:scale-90 transition-transform"
+                  aria-label="Rafraîchir"
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                    <path d="M1 4v6h6M23 20v-6h-6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M20.49 9A9 9 0 005.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 013.51 15" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </button>
+              </div>
             </div>
             <a
               href="/"
@@ -222,7 +217,7 @@ export default function AdminPage() {
             <p className="text-[28px] font-extrabold text-heading mt-1 leading-none">{totalVotes}</p>
           </div>
           <div className="rounded-[14px] bg-surface p-3.5 shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
-            <p className="text-[11px] font-semibold text-muted uppercase tracking-wider">Invités</p>
+            <p className="text-[11px] font-semibold text-muted uppercase tracking-wider">Inscrits</p>
             <p className="text-[28px] font-extrabold text-heading mt-1 leading-none">{totalGuests}</p>
           </div>
           <div className="rounded-[14px] bg-surface p-3.5 shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
