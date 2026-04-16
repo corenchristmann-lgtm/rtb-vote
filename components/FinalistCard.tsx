@@ -85,7 +85,7 @@ export function FinalistCard({ finalist, selected, expanded, onToggle, onSelect 
                 src={finalist.photo_url}
                 alt=""
                 fill
-                className={`object-cover ${finalist.first_name === "Florence" ? "object-top" : "object-center"}`}
+                className={`object-cover ${["Florence", "Ilyas", "François"].includes(finalist.first_name) ? "object-top" : "object-center"}`}
                 sizes="(max-width: 768px) 100vw, 400px"
                 unoptimized
               />
